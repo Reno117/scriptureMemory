@@ -17,7 +17,7 @@ export default async function Navbar() {
       {session?.user ? (
         <div className="flex items-center space-x-4">
           <span className="text-sm">
-            Logged in as: <strong>{session.user.name}</strong> | Role: <strong>{session.user.role}</strong>
+            Logged in as: <strong>{session.user.name}</strong>
           </span>
           <LogoutButton />
         </div>
