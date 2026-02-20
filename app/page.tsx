@@ -1,9 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import VerseList from "@/app/components/VerseList";
+import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const verses = await prisma.verse.findMany({
-    where: { isSeed: true },
+    //where: { isSeed: true },
     orderBy: [{ book: "asc" }, { chapter: "asc" }, { verse: "asc" }],
   });
 
@@ -19,6 +22,14 @@ export default async function Home() {
           </p>
         </div>
         <VerseList verses={verses} />
+        <div className="mt-8">
+          <Link
+            href="/addVerse"
+            className="inline-block text-sm px-5 py-2 bg-stone-800 text-white rounded-lg hover:bg-stone-700 transition-colors"
+          >
+            + Add Verse
+          </Link>
+        </div>
       </div>
     </main>
   );

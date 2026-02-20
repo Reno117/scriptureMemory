@@ -285,7 +285,6 @@ model Verse {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@unique([reference, translation])
   @@index([userId])
   @@index([book])
   @@index([isMemorized])

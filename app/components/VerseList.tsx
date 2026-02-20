@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 type Verse = {
   id: string;
@@ -11,6 +12,7 @@ type Verse = {
   text: string;
   translation: string;
   isMemorized: boolean;
+  isSeed: boolean;
 };
 
 const PAGE_SIZE = 10;
@@ -24,29 +26,32 @@ export default function VerseList({ verses }: { verses: Verse[] }) {
     <div>
       <div className="space-y-4">
         {paginated.map((v) => (
-          <div
-            key={v.id}
-            className="bg-white border border-stone-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow"
-          >
+          <div key={v.id} className="bg-white border border-stone-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
-                <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-1">
-                  {v.reference} · {v.translation}
-                </p>
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest">
+                    {v.reference} · {v.translation}
+                  </p>
+                  {v.isMemorized && (
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                      Memorized ✓
+                    </span>
+                  )}
+                </div>
                 <p className="text-stone-700 text-sm leading-relaxed">{v.text}</p>
               </div>
-              <button
-                onClick={() => alert("Edit coming soon!")}
+              <Link
+                href={`/verses/${v.id}/edit`}
                 className="shrink-0 text-xs text-stone-400 border border-stone-200 rounded-lg px-3 py-1.5 hover:bg-stone-100 hover:text-stone-600 transition-colors"
               >
                 Edit
-              </button>
+              </Link>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Pagination */}
       <div className="flex items-center justify-between mt-8">
         <p className="text-xs text-stone-400">
           Page {page} of {totalPages} · {verses.length} verses
