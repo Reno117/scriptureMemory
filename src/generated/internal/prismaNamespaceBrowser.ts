@@ -53,9 +53,19 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   DriverProfile: 'DriverProfile',
+  Sponsor: 'Sponsor',
+  SponsorUser: 'SponsorUser',
+  DriverApplication: 'DriverApplication',
+  PointChange: 'PointChange',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  CatalogProduct: 'CatalogProduct',
+  Cart: 'Cart',
+  CartItem: 'CartItem',
+  Order: 'Order',
+  OrderItem: 'OrderItem',
+  Verse: 'Verse'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -99,6 +109,55 @@ export const DriverProfileScalarFieldEnum = {
 } as const
 
 export type DriverProfileScalarFieldEnum = (typeof DriverProfileScalarFieldEnum)[keyof typeof DriverProfileScalarFieldEnum]
+
+
+export const SponsorScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  pointValue: 'pointValue',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SponsorScalarFieldEnum = (typeof SponsorScalarFieldEnum)[keyof typeof SponsorScalarFieldEnum]
+
+
+export const SponsorUserScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  sponsorId: 'sponsorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SponsorUserScalarFieldEnum = (typeof SponsorUserScalarFieldEnum)[keyof typeof SponsorUserScalarFieldEnum]
+
+
+export const DriverApplicationScalarFieldEnum = {
+  id: 'id',
+  driverProfileId: 'driverProfileId',
+  sponsorId: 'sponsorId',
+  status: 'status',
+  reason: 'reason',
+  reviewedBy: 'reviewedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DriverApplicationScalarFieldEnum = (typeof DriverApplicationScalarFieldEnum)[keyof typeof DriverApplicationScalarFieldEnum]
+
+
+export const PointChangeScalarFieldEnum = {
+  id: 'id',
+  driverProfileId: 'driverProfileId',
+  sponsorId: 'sponsorId',
+  amount: 'amount',
+  reason: 'reason',
+  changedBy: 'changedBy',
+  createdAt: 'createdAt'
+} as const
+
+export type PointChangeScalarFieldEnum = (typeof PointChangeScalarFieldEnum)[keyof typeof PointChangeScalarFieldEnum]
 
 
 export const SessionScalarFieldEnum = {
@@ -146,6 +205,91 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
+export const CatalogProductScalarFieldEnum = {
+  id: 'id',
+  sponsorId: 'sponsorId',
+  ebayItemId: 'ebayItemId',
+  title: 'title',
+  imageUrl: 'imageUrl',
+  price: 'price',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CatalogProductScalarFieldEnum = (typeof CatalogProductScalarFieldEnum)[keyof typeof CatalogProductScalarFieldEnum]
+
+
+export const CartScalarFieldEnum = {
+  id: 'id',
+  driverProfileId: 'driverProfileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CartScalarFieldEnum = (typeof CartScalarFieldEnum)[keyof typeof CartScalarFieldEnum]
+
+
+export const CartItemScalarFieldEnum = {
+  id: 'id',
+  cartId: 'cartId',
+  ebayItemId: 'ebayItemId',
+  title: 'title',
+  imageUrl: 'imageUrl',
+  pointPrice: 'pointPrice',
+  quantity: 'quantity',
+  createdAt: 'createdAt'
+} as const
+
+export type CartItemScalarFieldEnum = (typeof CartItemScalarFieldEnum)[keyof typeof CartItemScalarFieldEnum]
+
+
+export const OrderScalarFieldEnum = {
+  id: 'id',
+  driverProfileId: 'driverProfileId',
+  sponsorId: 'sponsorId',
+  totalPoints: 'totalPoints',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
+
+
+export const OrderItemScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  ebayItemId: 'ebayItemId',
+  title: 'title',
+  imageUrl: 'imageUrl',
+  pointPrice: 'pointPrice',
+  quantity: 'quantity',
+  createdAt: 'createdAt'
+} as const
+
+export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
+
+
+export const VerseScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reference: 'reference',
+  book: 'book',
+  chapter: 'chapter',
+  verse: 'verse',
+  text: 'text',
+  translation: 'translation',
+  imageUrl: 'imageUrl',
+  isMemorized: 'isMemorized',
+  isSeed: 'isSeed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerseScalarFieldEnum = (typeof VerseScalarFieldEnum)[keyof typeof VerseScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -183,6 +327,46 @@ export const DriverProfileOrderByRelevanceFieldEnum = {
 export type DriverProfileOrderByRelevanceFieldEnum = (typeof DriverProfileOrderByRelevanceFieldEnum)[keyof typeof DriverProfileOrderByRelevanceFieldEnum]
 
 
+export const SponsorOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type SponsorOrderByRelevanceFieldEnum = (typeof SponsorOrderByRelevanceFieldEnum)[keyof typeof SponsorOrderByRelevanceFieldEnum]
+
+
+export const SponsorUserOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  sponsorId: 'sponsorId'
+} as const
+
+export type SponsorUserOrderByRelevanceFieldEnum = (typeof SponsorUserOrderByRelevanceFieldEnum)[keyof typeof SponsorUserOrderByRelevanceFieldEnum]
+
+
+export const DriverApplicationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  driverProfileId: 'driverProfileId',
+  sponsorId: 'sponsorId',
+  status: 'status',
+  reason: 'reason',
+  reviewedBy: 'reviewedBy'
+} as const
+
+export type DriverApplicationOrderByRelevanceFieldEnum = (typeof DriverApplicationOrderByRelevanceFieldEnum)[keyof typeof DriverApplicationOrderByRelevanceFieldEnum]
+
+
+export const PointChangeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  driverProfileId: 'driverProfileId',
+  sponsorId: 'sponsorId',
+  reason: 'reason',
+  changedBy: 'changedBy'
+} as const
+
+export type PointChangeOrderByRelevanceFieldEnum = (typeof PointChangeOrderByRelevanceFieldEnum)[keyof typeof PointChangeOrderByRelevanceFieldEnum]
+
+
 export const SessionOrderByRelevanceFieldEnum = {
   id: 'id',
   token: 'token',
@@ -216,4 +400,68 @@ export const VerificationOrderByRelevanceFieldEnum = {
 } as const
 
 export type VerificationOrderByRelevanceFieldEnum = (typeof VerificationOrderByRelevanceFieldEnum)[keyof typeof VerificationOrderByRelevanceFieldEnum]
+
+
+export const CatalogProductOrderByRelevanceFieldEnum = {
+  id: 'id',
+  sponsorId: 'sponsorId',
+  ebayItemId: 'ebayItemId',
+  title: 'title',
+  imageUrl: 'imageUrl'
+} as const
+
+export type CatalogProductOrderByRelevanceFieldEnum = (typeof CatalogProductOrderByRelevanceFieldEnum)[keyof typeof CatalogProductOrderByRelevanceFieldEnum]
+
+
+export const CartOrderByRelevanceFieldEnum = {
+  id: 'id',
+  driverProfileId: 'driverProfileId'
+} as const
+
+export type CartOrderByRelevanceFieldEnum = (typeof CartOrderByRelevanceFieldEnum)[keyof typeof CartOrderByRelevanceFieldEnum]
+
+
+export const CartItemOrderByRelevanceFieldEnum = {
+  id: 'id',
+  cartId: 'cartId',
+  ebayItemId: 'ebayItemId',
+  title: 'title',
+  imageUrl: 'imageUrl'
+} as const
+
+export type CartItemOrderByRelevanceFieldEnum = (typeof CartItemOrderByRelevanceFieldEnum)[keyof typeof CartItemOrderByRelevanceFieldEnum]
+
+
+export const OrderOrderByRelevanceFieldEnum = {
+  id: 'id',
+  driverProfileId: 'driverProfileId',
+  sponsorId: 'sponsorId',
+  status: 'status'
+} as const
+
+export type OrderOrderByRelevanceFieldEnum = (typeof OrderOrderByRelevanceFieldEnum)[keyof typeof OrderOrderByRelevanceFieldEnum]
+
+
+export const OrderItemOrderByRelevanceFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  ebayItemId: 'ebayItemId',
+  title: 'title',
+  imageUrl: 'imageUrl'
+} as const
+
+export type OrderItemOrderByRelevanceFieldEnum = (typeof OrderItemOrderByRelevanceFieldEnum)[keyof typeof OrderItemOrderByRelevanceFieldEnum]
+
+
+export const VerseOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reference: 'reference',
+  book: 'book',
+  text: 'text',
+  translation: 'translation',
+  imageUrl: 'imageUrl'
+} as const
+
+export type VerseOrderByRelevanceFieldEnum = (typeof VerseOrderByRelevanceFieldEnum)[keyof typeof VerseOrderByRelevanceFieldEnum]
 

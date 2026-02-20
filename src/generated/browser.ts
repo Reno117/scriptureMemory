@@ -28,6 +28,26 @@ export type User = Prisma.UserModel
  */
 export type DriverProfile = Prisma.DriverProfileModel
 /**
+ * Model Sponsor
+ * 
+ */
+export type Sponsor = Prisma.SponsorModel
+/**
+ * Model SponsorUser
+ * 
+ */
+export type SponsorUser = Prisma.SponsorUserModel
+/**
+ * Model DriverApplication
+ * 
+ */
+export type DriverApplication = Prisma.DriverApplicationModel
+/**
+ * Model PointChange
+ * 
+ */
+export type PointChange = Prisma.PointChangeModel
+/**
  * Model Session
  * 
  */
@@ -42,3 +62,33 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type Verification = Prisma.VerificationModel
+/**
+ * Model CatalogProduct
+ * 
+ */
+export type CatalogProduct = Prisma.CatalogProductModel
+/**
+ * Model Cart
+ * 
+ */
+export type Cart = Prisma.CartModel
+/**
+ * Model CartItem
+ * 
+ */
+export type CartItem = Prisma.CartItemModel
+/**
+ * Model Order
+ * 
+ */
+export type Order = Prisma.OrderModel
+/**
+ * Model OrderItem
+ * 
+ */
+export type OrderItem = Prisma.OrderItemModel
+/**
+ * Model Verse
+ * 
+ */
+export type Verse = Prisma.VerseModel
