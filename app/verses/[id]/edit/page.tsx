@@ -105,7 +105,7 @@ export default async function EditVersePage({ params }: { params: Promise<{ id: 
               Save Changes
             </button>
             <a
-              href="/verses"
+              href="/"
               className="text-sm px-5 py-2 border border-stone-200 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors"
             >
               Cancel
