@@ -13,6 +13,7 @@ type Verse = {
   translation: string;
   isMemorized: boolean;
   isSeed: boolean;
+  imageUrl: string | null;
 };
 
 const PAGE_SIZE = 10;
@@ -26,27 +27,47 @@ export default function VerseList({ verses }: { verses: Verse[] }) {
     <div>
       <div className="space-y-4">
         {paginated.map((v) => (
-          <div key={v.id} className="bg-white border border-stone-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest">
-                    {v.reference} · {v.translation}
-                  </p>
-                  {v.isMemorized && (
-                    <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                      Memorized ✓
-                    </span>
-                  )}
-                </div>
-                <p className="text-stone-700 text-sm leading-relaxed">{v.text}</p>
+          <div
+            key={v.id}
+            className="bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="flex items-stretch gap-0">
+              {/* Image */}
+              <div className="w-24 shrink-0 relative">
+                <img
+                  src={v.imageUrl ?? "/placeholder.jpg"}
+                  alt={v.reference}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "/placeholder.jpg";
+                  }}
+                />
               </div>
-              <Link
-                href={`/verses/${v.id}/edit`}
-                className="shrink-0 text-xs text-stone-400 border border-stone-200 rounded-lg px-3 py-1.5 hover:bg-stone-100 hover:text-stone-600 transition-colors"
-              >
-                Edit
-              </Link>
+
+              {/* Content */}
+              <div className="flex-1 p-5 flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest">
+                      {v.reference} · {v.translation}
+                    </p>
+                    {v.isMemorized && (
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                        Memorized ✓
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-stone-700 text-sm leading-relaxed">
+                    {v.text}
+                  </p>
+                </div>
+                <Link
+                  href={`/verses/${v.id}/edit`}
+                  className="shrink-0 text-xs text-stone-400 border border-stone-200 rounded-lg px-3 py-1.5 hover:bg-stone-100 hover:text-stone-600 transition-colors"
+                >
+                  Edit
+                </Link>
+              </div>
             </div>
           </div>
         ))}

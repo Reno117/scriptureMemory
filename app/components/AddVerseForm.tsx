@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addVerse } from "@/app/actions/verses";
+import { AnyAaaaRecord } from "dns";
 
 export default function AddVerseForm() {
   const router = useRouter();
@@ -34,6 +35,7 @@ export default function AddVerseForm() {
       router.push("/");
       router.refresh(); // forces the page to re-fetch
     } catch (err) {
+      if ((err as any)?.digest?.startsWith("NEXT_REDIRECT")) throw err;
       console.error(err);
       setStatus("error");
     }
