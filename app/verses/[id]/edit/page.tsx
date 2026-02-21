@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { editVerse, getVerseById } from "@/app/actions/verses";
+import DeleteVerseButton from "@/app/components/DeleteVerseButton";
 
 export default async function EditVersePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -112,6 +113,7 @@ export default async function EditVersePage({ params }: { params: Promise<{ id: 
             </a>
           </div>
         </form>
+        <DeleteVerseButton id={verse.id} />
       </div>
     </div>
   );

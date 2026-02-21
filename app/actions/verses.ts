@@ -45,6 +45,14 @@ export async function editVerse(data: {
   redirect("/");
 }
 
+export async function deleteVerse(id: string) {
+  await prisma.verse.delete({
+    where: { id },
+  });
+
+  redirect("/");
+}
+
 export async function getVerseById(id: string) {
   return prisma.verse.findUnique({ where: { id } }); // or however your DB is set up
 }
