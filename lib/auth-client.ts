@@ -4,6 +4,6 @@ export const authClient = createAuthClient({
   //you can pass client configuration here
   baseURL:
     process.env.NODE_ENV === "production"
-      ? "https://www.anamnesis.pro/login"
+      ? "https://www.anamnesis.pro"
       : "http://localhost:3000",
 });
