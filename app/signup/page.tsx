@@ -15,6 +15,7 @@ export default function Signup() {
       email,
       password,
       name,
+      callbackURL: "/",
     });
 
     setEmail("");

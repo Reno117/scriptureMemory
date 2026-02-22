@@ -22,6 +22,7 @@ export default function Login() {
       const result = await authClient.signIn.email({
         email,
         password,
+        callbackURL: "/",
       });
 
       if (result.error) {

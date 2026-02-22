@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -16,35 +17,45 @@ type Verse = {
   imageUrl: string | null;
 };
 
-const PAGE_SIZE = 10;
+export default function VerseList({
+  verses, totalCount, page, pageSize
+}: {
+  verses: Verse[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const totalPages = Math.ceil(totalCount / pageSize);
 
-export default function VerseList({ verses }: { verses: Verse[] }) {
-  const [page, setPage] = useState(1);
-  const totalPages = Math.ceil(verses.length / PAGE_SIZE);
-  const paginated = verses.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const setPage = (newPage: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", String(newPage));
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   return (
     <div>
+      {verses.length === 0 && (
+        <div className="text-center py-16 text-stone-400 text-sm">
+          No verses found. Try a different search.
+        </div>
+      )}
+
       <div className="space-y-4">
-        {paginated.map((v) => (
-          <div
-            key={v.id}
-            className="bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-stretch gap-0">
-              {/* Image */}
-              <div className="w-24 shrink-0 relative">
+        {verses.map((v) => (
+          <div key={v.id} className="bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-stretch">
+              <div className="w-24 shrink-0">
                 <img
                   src={v.imageUrl ?? "/placeholder.jpg"}
                   alt={v.reference}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "/placeholder.jpg";
-                  }}
+                  onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.jpg"; }}
                 />
               </div>
-
-              {/* Content */}
               <div className="flex-1 p-5 flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
@@ -57,9 +68,7 @@ export default function VerseList({ verses }: { verses: Verse[] }) {
                       </span>
                     )}
                   </div>
-                  <p className="text-stone-700 text-sm leading-relaxed">
-                    {v.text}
-                  </p>
+                  <p className="text-stone-700 text-sm leading-relaxed">{v.text}</p>
                 </div>
                 <Link
                   href={`/verses/${v.id}/edit`}
@@ -75,21 +84,15 @@ export default function VerseList({ verses }: { verses: Verse[] }) {
 
       <div className="flex items-center justify-between mt-8">
         <p className="text-xs text-stone-400">
-          Page {page} of {totalPages} · {verses.length} verses
+          Page {page} of {totalPages} · {totalCount} total verses
         </p>
         <div className="flex gap-2">
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-            className="text-sm px-4 py-2 rounded-lg border border-stone-200 text-stone-600 hover:bg-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          >
+          <button onClick={() => setPage(page - 1)} disabled={page === 1}
+            className="text-sm px-4 py-2 rounded-lg border border-stone-200 text-stone-600 hover:bg-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
             Previous
           </button>
-          <button
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages}
-            className="text-sm px-4 py-2 rounded-lg border border-stone-200 text-stone-600 hover:bg-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          >
+          <button onClick={() => setPage(page + 1)} disabled={page === totalPages}
+            className="text-sm px-4 py-2 rounded-lg border border-stone-200 text-stone-600 hover:bg-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
             Next
           </button>
         </div>
