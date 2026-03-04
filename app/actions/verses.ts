@@ -35,7 +35,13 @@ export async function editVerse(data: {
   translation?: string;
   isMemorized?: boolean;
 }) {
+  const user = await getCurrentUser();
   const { id, ...fields } = data;
+
+  // make sure user owns this verse
+  const verse = await prisma.verse.findUnique({ where: { id } });
+  if (!verse) redirect("/");
+  if (verse.userId !== (user?.id ?? null)) redirect("/");
 
   await prisma.verse.update({
     where: { id },
@@ -46,13 +52,17 @@ export async function editVerse(data: {
 }
 
 export async function deleteVerse(id: string) {
-  await prisma.verse.delete({
-    where: { id },
-  });
+  const user = await getCurrentUser();
+
+  const verse = await prisma.verse.findUnique({ where: { id } });
+  if (!verse) redirect("/");
+  if (verse.userId !== (user?.id ?? null)) redirect("/");
+
+  await prisma.verse.delete({ where: { id } });
 
   redirect("/");
 }
 
 export async function getVerseById(id: string) {
-  return prisma.verse.findUnique({ where: { id } }); // or however your DB is set up
+  return prisma.verse.findUnique({ where: { id } });
 }
