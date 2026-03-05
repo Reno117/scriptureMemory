@@ -1,10 +1,14 @@
+import { getCurrentUser } from "@/lib/auth-helpers";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
+
+  const isAuth = await getCurrentUser();
   const { searchParams } = new URL(request.url);
   const reference = searchParams.get("reference");
 
   if (!reference) return NextResponse.json({ error: "No reference provided" }, { status: 400 });
+  if (!isAuth) return NextResponse.json({ error: "Invalid user" }, { status: 400 });
 
   const res = await fetch(
     `https://api.esv.org/v3/passage/text/?q=${encodeURIComponent(reference)}&include-headings=false&include-footnotes=false&include-verse-numbers=false&include-short-copyright=false&include-passage-references=false`,
