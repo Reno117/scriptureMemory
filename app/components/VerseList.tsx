@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
+import VerseModal from "./VerseModal";
 
 type Verse = {
   id: string;
@@ -28,6 +29,7 @@ export default function VerseList({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [selectedVerse, setSelectedVerse] = useState<Verse | null>(null);
   const totalPages = Math.ceil(totalCount / pageSize);
 
   const setPage = (newPage: number) => {
@@ -38,6 +40,10 @@ export default function VerseList({
 
   return (
     <div>
+      {selectedVerse && (
+        <VerseModal verse={selectedVerse} onClose={() => setSelectedVerse(null)} />
+      )}
+
       {verses.length === 0 && (
         <div className="text-center py-16 text-stone-400 text-sm">
           No verses found. Try a different search.
@@ -46,7 +52,11 @@ export default function VerseList({
 
       <div className="space-y-4">
         {verses.map((v) => (
-          <div key={v.id} className="bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+          <div
+            key={v.id}
+            className="bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onClick={() => setSelectedVerse(v)}
+          >
             <div className="flex items-stretch">
               <div className="w-24 shrink-0">
                 <img
@@ -72,6 +82,7 @@ export default function VerseList({
                 </div>
                 <Link
                   href={`/verses/${v.id}/edit`}
+                  onClick={(e) => e.stopPropagation()}
                   className="shrink-0 text-xs text-stone-400 border border-stone-200 rounded-lg px-3 py-1.5 hover:bg-stone-100 hover:text-stone-600 transition-colors"
                 >
                   Edit
