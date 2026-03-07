@@ -1,23 +1,30 @@
+import { getCurrentUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export default async function StatsPage() {
-  const totalVerses = await prisma.verse.count();
+  const user = await getCurrentUser();
+
+  const where = user ? { userId: user.id } : { isSeed: true };
+
+  const totalVerses = await prisma.verse.count({ where });
+
   const memorizedVerses = await prisma.verse.count({
-    where: { isMemorized: true },
+    where: { ...where, isMemorized: true },
   });
+
   const notMemorized = totalVerses - memorizedVerses;
   const memorizedPercent =
     totalVerses > 0 ? Math.round((memorizedVerses / totalVerses) * 100) : 0;
 
   const byBook = await prisma.verse.groupBy({
     by: ["book"],
+    where,
     _count: { id: true },
     orderBy: { _count: { id: "desc" } },
   });
-
   return (
     <main className="min-h-screen bg-stone-50">
       <div className="max-w-3xl mx-auto px-4 py-12">
@@ -28,7 +35,7 @@ export default async function StatsPage() {
           >
             ← Back to verses
           </Link>
-          <h1 className="text-4xl font-serif font-bold text-stone-800 mb-2">
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-stone-800 mb-2">
             Stats
           </h1>
           <p className="text-stone-500 text-sm">

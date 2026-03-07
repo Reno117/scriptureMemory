@@ -4,7 +4,9 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 
 export default function VerseControls({
-  search, sort, pageSize
+  search,
+  sort,
+  pageSize,
 }: {
   search: string;
   sort: string;
@@ -14,12 +16,15 @@ export default function VerseControls({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const updateParams = useCallback((updates: Record<string, string>) => {
-    const params = new URLSearchParams(searchParams.toString());
-    Object.entries(updates).forEach(([key, value]) => params.set(key, value));
-    params.set("page", "1"); // reset to page 1 on any change
-    router.push(`${pathname}?${params.toString()}`);
-  }, [searchParams, pathname, router]);
+  const updateParams = useCallback(
+    (updates: Record<string, string>) => {
+      const params = new URLSearchParams(searchParams.toString());
+      Object.entries(updates).forEach(([key, value]) => params.set(key, value));
+      params.set("page", "1"); // reset to page 1 on any change
+      router.push(`${pathname}?${params.toString()}`);
+    },
+    [searchParams, pathname, router],
+  );
 
   const handlePageSize = (value: string) => {
     document.cookie = `pageSize=${value}; path=/; max-age=${60 * 60 * 24 * 365}`;
@@ -38,7 +43,7 @@ export default function VerseControls({
       <select
         value={sort}
         onChange={(e) => updateParams({ sort: e.target.value })}
-        className="border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-300"
+        className="w-full sm:w-auto border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-300"
       >
         <option value="book">Sort by Book</option>
         <option value="recent">Sort by Recently Added</option>
@@ -47,7 +52,7 @@ export default function VerseControls({
       <select
         value={pageSize}
         onChange={(e) => handlePageSize(e.target.value)}
-        className="border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-300"
+        className="w-full sm:w-auto border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-300"
       >
         <option value="5">5 per page</option>
         <option value="10">10 per page</option>

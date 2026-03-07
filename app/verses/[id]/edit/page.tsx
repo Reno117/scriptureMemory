@@ -2,7 +2,11 @@ import { notFound, redirect } from "next/navigation";
 import { editVerse, getVerseById } from "@/app/actions/verses";
 import DeleteVerseButton from "@/app/components/DeleteVerseButton";
 
-export default async function EditVersePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditVersePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const verse = await getVerseById(id);
   if (!verse) notFound();
@@ -28,18 +32,23 @@ export default async function EditVersePage({ params }: { params: Promise<{ id: 
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 flex items-start justify-center pt-16 px-4">
-      <div className="w-full max-w-lg bg-white border border-stone-200 rounded-2xl shadow-sm p-8 space-y-6">
-        {/* Header */}
+    <div className="min-h-screen bg-stone-50 flex items-start justify-center pt-8 sm:pt-16 px-4">
+      <div className="w-full max-w-lg bg-white border border-stone-200 rounded-2xl shadow-sm p-6 sm:p-8 space-y-6">
         <div>
-          <h1 className="text-xl font-serif font-semibold text-stone-800">Edit Verse</h1>
-          <p className="text-xs text-stone-400 mt-1 uppercase tracking-widest">{verse.reference} · {verse.translation}</p>
+          <h1 className="text-xl font-serif font-semibold text-stone-800">
+            Edit Verse
+          </h1>
+          <p className="text-xs text-stone-400 mt-1 uppercase tracking-widest">
+            {verse.reference} · {verse.translation}
+          </p>
         </div>
 
         <form action={handleSubmit} className="space-y-5">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs text-stone-500 uppercase tracking-widest">Book</label>
+              <label className="text-xs text-stone-500 uppercase tracking-widest">
+                Book
+              </label>
               <input
                 name="book"
                 defaultValue={verse.book}
@@ -48,7 +57,9 @@ export default async function EditVersePage({ params }: { params: Promise<{ id: 
               />
             </div>
             <div>
-              <label className="text-xs text-stone-500 uppercase tracking-widest">Translation</label>
+              <label className="text-xs text-stone-500 uppercase tracking-widest">
+                Translation
+              </label>
               <input
                 name="translation"
                 defaultValue={verse.translation}
@@ -57,7 +68,9 @@ export default async function EditVersePage({ params }: { params: Promise<{ id: 
               />
             </div>
             <div>
-              <label className="text-xs text-stone-500 uppercase tracking-widest">Chapter</label>
+              <label className="text-xs text-stone-500 uppercase tracking-widest">
+                Chapter
+              </label>
               <input
                 name="chapter"
                 defaultValue={verse.chapter}
@@ -67,7 +80,9 @@ export default async function EditVersePage({ params }: { params: Promise<{ id: 
               />
             </div>
             <div>
-              <label className="text-xs text-stone-500 uppercase tracking-widest">Verse</label>
+              <label className="text-xs text-stone-500 uppercase tracking-widest">
+                Verse
+              </label>
               <input
                 name="verse"
                 defaultValue={verse.verse}
@@ -76,8 +91,10 @@ export default async function EditVersePage({ params }: { params: Promise<{ id: 
                 className="mt-1 w-full border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-300"
               />
             </div>
-            <div className="col-span-2">
-              <label className="text-xs text-stone-500 uppercase tracking-widest">Verse Text</label>
+            <div className="col-span-1 sm:col-span-2">
+              <label className="text-xs text-stone-500 uppercase tracking-widest">
+                Verse Text
+              </label>
               <textarea
                 name="text"
                 defaultValue={verse.text}
@@ -95,10 +112,12 @@ export default async function EditVersePage({ params }: { params: Promise<{ id: 
               defaultChecked={verse.isMemorized}
               className="w-4 h-4 rounded border-stone-300 accent-stone-800"
             />
-            <span className="text-sm text-stone-600">I have memorized this verse</span>
+            <span className="text-sm text-stone-600">
+              I have memorized this verse
+            </span>
           </label>
 
-          <div className="flex items-center gap-3 pt-2">
+          <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               type="submit"
               className="text-sm px-5 py-2 bg-stone-800 text-white rounded-lg hover:bg-stone-700 transition-colors"

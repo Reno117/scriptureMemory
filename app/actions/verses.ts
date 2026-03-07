@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-helpers";
 import { redirect } from "next/navigation";
+import { BOOKS, DEFAULT_IMAGE } from "@/lib/books";
 
 export async function addVerse(data: {
   reference: string;
@@ -11,12 +12,14 @@ export async function addVerse(data: {
   verse: number;
   text: string;
   translation: string;
+  imageUrl?: string;
 }) {
   const user = await getCurrentUser();
 
   await prisma.verse.create({
     data: {
       ...data,
+      imageUrl: data.imageUrl ?? BOOKS[data.book] ?? DEFAULT_IMAGE,
       userId: user?.id ?? null,
       isSeed: false,
     },
@@ -38,14 +41,19 @@ export async function editVerse(data: {
   const user = await getCurrentUser();
   const { id, ...fields } = data;
 
-  // make sure user owns this verse
   const verse = await prisma.verse.findUnique({ where: { id } });
   if (!verse) redirect("/");
   if (verse.userId !== (user?.id ?? null)) redirect("/");
 
+  // update imageUrl if book changed
+  const imageUrl = fields.book ? (BOOKS[fields.book] ?? DEFAULT_IMAGE) : undefined;
+
   await prisma.verse.update({
     where: { id },
-    data: fields,
+    data: {
+      ...fields,
+      ...(imageUrl ? { imageUrl } : {}),
+    },
   });
 
   redirect("/");

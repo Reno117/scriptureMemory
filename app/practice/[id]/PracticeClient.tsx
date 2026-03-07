@@ -136,7 +136,7 @@ export default function PracticeClient({
           >
             ← Back to verses
           </Link>
-          <h1 className="text-3xl font-serif font-bold text-stone-800 mt-4 mb-1">
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-stone-800 mt-4 mb-1">
             {mode === "firstletter" ? "First Letter Mode" : "Full Memory Mode"}
           </h1>
           <p className="text-xs text-stone-400 uppercase tracking-widest">

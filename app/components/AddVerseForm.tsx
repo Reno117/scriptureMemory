@@ -2,23 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { addVerse } from "@/app/actions/verses";
+import { BOOKS, DEFAULT_IMAGE } from "@/lib/books";
 
-const BOOKS = [
-  "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy",
-  "Joshua", "Judges", "Ruth", "1 Samuel", "2 Samuel",
-  "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Ezra",
-  "Nehemiah", "Esther", "Job", "Psalm", "Proverbs",
-  "Ecclesiastes", "Song of Solomon", "Isaiah", "Jeremiah", "Lamentations",
-  "Ezekiel", "Daniel", "Hosea", "Joel", "Amos",
-  "Obadiah", "Jonah", "Micah", "Nahum", "Habakkuk",
-  "Zephaniah", "Haggai", "Zechariah", "Malachi",
-  "Matthew", "Mark", "Luke", "John", "Acts",
-  "Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians",
-  "Philippians", "Colossians", "1 Thessalonians", "2 Thessalonians",
-  "1 Timothy", "2 Timothy", "Titus", "Philemon", "Hebrews",
-  "James", "1 Peter", "2 Peter", "1 John", "2 John",
-  "3 John", "Jude", "Revelation",
-];
+const bookNames = Object.keys(BOOKS);
 
 const TRANSLATIONS = [
   "ESV", "NIV", "KJV", "NLT", "NASB", "CSB", "MSG", "AMP", "NKJV", "RSV",
@@ -29,7 +15,7 @@ function BookCombobox({ value, onChange }: { value: string; onChange: (val: stri
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  const filtered = BOOKS.filter((b) => b.toLowerCase().includes(query.toLowerCase()));
+  const filtered = bookNames.filter((b) => b.toLowerCase().includes(query.toLowerCase()));
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -114,6 +100,7 @@ export default function AddVerseForm() {
         text: form.text,
         translation: form.translation,
         reference: `${form.book} ${form.chapter}:${form.verse}`,
+        imageUrl: BOOKS[form.book] ?? DEFAULT_IMAGE,
       });
     } catch (err) {
       if ((err as any)?.digest?.startsWith("NEXT_REDIRECT")) throw err;
@@ -126,14 +113,11 @@ export default function AddVerseForm() {
       <h1 className="text-3xl font-serif font-bold text-stone-800 mb-8">Add a Verse</h1>
 
       <form onSubmit={handleSubmit} className="bg-white border border-stone-200 rounded-xl p-6 shadow-sm space-y-5">
-
-        {/* Book */}
         <div>
           <label className="text-xs text-stone-500 uppercase tracking-widest">Book</label>
           <BookCombobox value={form.book} onChange={(val) => setForm((prev) => ({ ...prev, book: val }))} />
         </div>
 
-        {/* Chapter + Verse */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-xs text-stone-500 uppercase tracking-widest">Chapter</label>
@@ -147,7 +131,6 @@ export default function AddVerseForm() {
           </div>
         </div>
 
-        {/* Translation */}
         <div>
           <label className="text-xs text-stone-500 uppercase tracking-widest">Translation</label>
           <select name="translation" value={form.translation} onChange={handleChange}
@@ -158,22 +141,16 @@ export default function AddVerseForm() {
           </select>
         </div>
 
-        {/* ESV Fetch button */}
         {form.translation === "ESV" && (
           <div className="space-y-2">
-            <button
-              type="button"
-              onClick={fetchESVText}
-              disabled={status === "fetching"}
-              className="text-sm px-4 py-2 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 disabled:opacity-50 transition-colors"
-            >
+            <button type="button" onClick={fetchESVText} disabled={status === "fetching"}
+              className="text-sm px-4 py-2 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 disabled:opacity-50 transition-colors">
               {status === "fetching" ? "Fetching..." : "Fetch ESV Text"}
             </button>
             {fetchError && <p className="text-xs text-red-500">{fetchError}</p>}
           </div>
         )}
 
-        {/* Verse text */}
         <div>
           <label className="text-xs text-stone-500 uppercase tracking-widest">
             Verse Text {form.translation === "ESV" ? "(auto-filled for ESV)" : ""}
