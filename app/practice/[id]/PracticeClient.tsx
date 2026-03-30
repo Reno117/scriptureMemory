@@ -8,6 +8,7 @@ type Verse = {
   reference: string;
   translation: string;
   text: string;
+  verse?: number;
 };
 
 type WordState = {
@@ -30,13 +31,28 @@ function scoreSubmission(expected: string, typed: string) {
 
 export default function PracticeClient({
   verse,
+  verses,
   mode,
 }: {
   verse: Verse;
+  verses?: Verse[];
   mode: "firstletter" | "full";
 }) {
-  const words = verse.text.trim().split(/\s+/);
+  const group =
+    verses && verses.length > 1
+      ? [...verses].sort((a, b) => (a.verse ?? 0) - (b.verse ?? 0))
+      : [verse];
 
+  const combinedText = group.map((v) => v.text).join(" ");
+
+  const reference =
+    group.length > 1
+      ? `${group[0].reference.split(":")[0]}:${group[0].verse}–${group[group.length - 1].verse}`
+      : verse.reference;
+
+  const words = combinedText.trim().split(/\s+/);
+
+  // everything below is identical to your original — no changes
   const [wordStates, setWordStates] = useState<WordState[]>(
     words.map((w) => ({ word: w, revealed: false, correct: null })),
   );
@@ -44,11 +60,10 @@ export default function PracticeClient({
   const [currentInput, setCurrentInput] = useState("");
   const [finished, setFinished] = useState(false);
 
-  // full mode state
-  const [fullInput, setFullInput] = useState("");
+  const [fullInput, setFullInput] = useState<string>("");
   const [fullResults, setFullResults] = useState<
-    { expected: string; typed: string; correct: boolean }[] | null
-  >(null);
+  { expected: string; typed: string; correct: boolean }[] | null
+>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -57,66 +72,39 @@ export default function PracticeClient({
   const handleFirstLetterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (finished) return;
     const key = e.key.toLowerCase();
-
-    // ignore non-letter keys except space
     if (key.length !== 1) return;
 
     const currentWord = words[currentIndex];
     const firstLetter = currentWord[0].toLowerCase();
 
     if (key === firstLetter) {
-      // correct first letter — reveal the word
       const updated = [...wordStates];
-      updated[currentIndex] = {
-        word: currentWord,
-        revealed: true,
-        correct: true,
-      };
+      updated[currentIndex] = { word: currentWord, revealed: true, correct: true };
       setWordStates(updated);
       setCurrentInput("");
-
-      if (currentIndex + 1 >= words.length) {
-        setFinished(true);
-      } else {
-        setCurrentIndex(currentIndex + 1);
-      }
+      if (currentIndex + 1 >= words.length) setFinished(true);
+      else setCurrentIndex(currentIndex + 1);
     } else {
-      // wrong letter — mark incorrect and still advance
       const updated = [...wordStates];
-      updated[currentIndex] = {
-        word: currentWord,
-        revealed: true,
-        correct: false,
-      };
+      updated[currentIndex] = { word: currentWord, revealed: true, correct: false };
       setWordStates(updated);
       setCurrentInput("");
-
-      if (currentIndex + 1 >= words.length) {
-        setFinished(true);
-      } else {
-        setCurrentIndex(currentIndex + 1);
-      }
+      if (currentIndex + 1 >= words.length) setFinished(true);
+      else setCurrentIndex(currentIndex + 1);
     }
 
     e.preventDefault();
   };
 
   const correctCount = wordStates.filter((w) => w.correct === true).length;
-  const accuracy = finished
-    ? Math.round((correctCount / words.length) * 100)
-    : null;
+  const accuracy = finished ? Math.round((correctCount / words.length) * 100) : null;
 
   const fullAccuracy = fullResults
-    ? Math.round(
-        (fullResults.filter((r) => r.correct).length / fullResults.length) *
-          100,
-      )
+    ? Math.round((fullResults.filter((r) => r.correct).length / fullResults.length) * 100)
     : null;
 
   const handleReset = () => {
-    setWordStates(
-      words.map((w) => ({ word: w, revealed: false, correct: null })),
-    );
+    setWordStates(words.map((w) => ({ word: w, revealed: false, correct: null })));
     setCurrentIndex(0);
     setCurrentInput("");
     setFinished(false);
@@ -130,29 +118,23 @@ export default function PracticeClient({
       <div className="max-w-2xl mx-auto px-4 py-12">
         {/* Header */}
         <div className="mb-8">
-          <Link
-            href="/"
-            className="text-xs text-stone-400 hover:text-stone-600 transition-colors"
-          >
+          <Link href="/" className="text-xs text-stone-400 hover:text-stone-600 transition-colors">
             ← Back to verses
           </Link>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-stone-800 mt-4 mb-1">
             {mode === "firstletter" ? "First Letter Mode" : "Full Memory Mode"}
           </h1>
           <p className="text-xs text-stone-400 uppercase tracking-widest">
-            {verse.reference} · {verse.translation}
+            {reference} · {group[0].translation}  {/* ← was verse.reference · verse.translation */}
           </p>
         </div>
 
-        {/* FIRST LETTER MODE */}
+        {/* FIRST LETTER MODE — unchanged */}
         {mode === "firstletter" && (
           <div className="space-y-6">
             <p className="text-xs text-stone-400">
-              Type the first letter of each word — the rest will fill in
-              automatically.
+              Type the first letter of each word — the rest will fill in automatically.
             </p>
-
-            {/* Word display */}
             <div className="bg-white border border-stone-200 rounded-xl p-6 flex flex-wrap gap-2 min-h-24">
               {wordStates.map((ws, i) => (
                 <span
@@ -171,8 +153,6 @@ export default function PracticeClient({
                 </span>
               ))}
             </div>
-
-            {/* Hidden input to capture keystrokes */}
             {!finished && (
               <div className="space-y-2">
                 <input
@@ -186,34 +166,20 @@ export default function PracticeClient({
                 />
               </div>
             )}
-
-            {/* Results */}
             {finished && (
               <div className="space-y-4">
                 <div className="bg-white border border-stone-200 rounded-xl p-5">
-                  <p className="text-xs text-stone-400 uppercase tracking-widest mb-1">
-                    Accuracy
-                  </p>
-                  <p
-                    className={`text-4xl font-serif font-bold ${accuracy === 100 ? "text-green-600" : accuracy! >= 80 ? "text-yellow-600" : "text-red-500"}`}
-                  >
+                  <p className="text-xs text-stone-400 uppercase tracking-widest mb-1">Accuracy</p>
+                  <p className={`text-4xl font-serif font-bold ${accuracy === 100 ? "text-green-600" : accuracy! >= 80 ? "text-yellow-600" : "text-red-500"}`}>
                     {accuracy}%
                   </p>
-                  {accuracy === 100 && (
-                    <p className="text-sm text-green-600 mt-1">Perfect! 🎉</p>
-                  )}
+                  {accuracy === 100 && <p className="text-sm text-green-600 mt-1">Perfect! 🎉</p>}
                 </div>
                 <div className="flex gap-3">
-                  <button
-                    onClick={handleReset}
-                    className="text-sm px-5 py-2 bg-stone-800 text-white rounded-lg hover:bg-stone-700 transition-colors"
-                  >
+                  <button onClick={handleReset} className="text-sm px-5 py-2 bg-stone-800 text-white rounded-lg hover:bg-stone-700 transition-colors">
                     Try Again
                   </button>
-                  <Link
-                    href="/"
-                    className="text-sm px-5 py-2 border border-stone-200 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors"
-                  >
+                  <Link href="/" className="text-sm px-5 py-2 border border-stone-200 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors">
                     Back to Verses
                   </Link>
                 </div>
@@ -222,7 +188,7 @@ export default function PracticeClient({
           </div>
         )}
 
-        {/* FULL MEMORY MODE */}
+        {/* FULL MEMORY MODE — only verse.text swapped for combinedText */}
         {mode === "full" && (
           <div className="space-y-4">
             {!fullResults ? (
@@ -235,9 +201,7 @@ export default function PracticeClient({
                   className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-300 resize-none"
                 />
                 <button
-                  onClick={() =>
-                    setFullResults(scoreSubmission(verse.text, fullInput))
-                  }
+                  onClick={() => setFullResults(scoreSubmission(combinedText, fullInput))}  
                   disabled={!fullInput.trim()}
                   className="text-sm px-6 py-2.5 bg-stone-800 text-white rounded-lg hover:bg-stone-700 disabled:opacity-50 transition-colors"
                 >
@@ -247,61 +211,36 @@ export default function PracticeClient({
             ) : (
               <div className="space-y-6">
                 <div className="bg-white border border-stone-200 rounded-xl p-5">
-                  <p className="text-xs text-stone-400 uppercase tracking-widest mb-1">
-                    Accuracy
-                  </p>
-                  <p
-                    className={`text-4xl font-serif font-bold ${fullAccuracy === 100 ? "text-green-600" : fullAccuracy! >= 80 ? "text-yellow-600" : "text-red-500"}`}
-                  >
+                  <p className="text-xs text-stone-400 uppercase tracking-widest mb-1">Accuracy</p>
+                  <p className={`text-4xl font-serif font-bold ${fullAccuracy === 100 ? "text-green-600" : fullAccuracy! >= 80 ? "text-yellow-600" : "text-red-500"}`}>
                     {fullAccuracy}%
                   </p>
-                  {fullAccuracy === 100 && (
-                    <p className="text-sm text-green-600 mt-1">Perfect! 🎉</p>
-                  )}
+                  {fullAccuracy === 100 && <p className="text-sm text-green-600 mt-1">Perfect! 🎉</p>}
                 </div>
-
                 <div className="bg-white border border-stone-200 rounded-xl p-5">
-                  <p className="text-xs text-stone-400 uppercase tracking-widest mb-3">
-                    Word Breakdown
-                  </p>
+                  <p className="text-xs text-stone-400 uppercase tracking-widest mb-3">Word Breakdown</p>
                   <div className="flex flex-wrap gap-2">
                     {fullResults.map((r, i) => (
                       <div key={i} className="text-center">
-                        <div
-                          className={`px-2 py-1 rounded text-sm font-medium ${r.correct ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}
-                        >
+                        <div className={`px-2 py-1 rounded text-sm font-medium ${r.correct ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
                           {r.typed || "—"}
                         </div>
-                        {!r.correct && (
-                          <div className="text-xs text-stone-400 mt-1">
-                            {r.expected}
-                          </div>
-                        )}
+                        {!r.correct && <div className="text-xs text-stone-400 mt-1">{r.expected}</div>}
                       </div>
                     ))}
                   </div>
                 </div>
-
                 <div className="bg-white border border-stone-200 rounded-xl p-5">
-                  <p className="text-xs text-stone-400 uppercase tracking-widest mb-2">
-                    Correct Verse
-                  </p>
+                  <p className="text-xs text-stone-400 uppercase tracking-widest mb-2">Correct Verse</p>
                   <p className="text-stone-700 text-sm leading-relaxed">
-                    {verse.text}
+                    {combinedText}  {/* ← was verse.text */}
                   </p>
                 </div>
-
                 <div className="flex gap-3">
-                  <button
-                    onClick={handleReset}
-                    className="text-sm px-5 py-2 bg-stone-800 text-white rounded-lg hover:bg-stone-700 transition-colors"
-                  >
+                  <button onClick={handleReset} className="text-sm px-5 py-2 bg-stone-800 text-white rounded-lg hover:bg-stone-700 transition-colors">
                     Try Again
                   </button>
-                  <Link
-                    href="/"
-                    className="text-sm px-5 py-2 border border-stone-200 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors"
-                  >
+                  <Link href="/" className="text-sm px-5 py-2 border border-stone-200 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors">
                     Back to Verses
                   </Link>
                 </div>

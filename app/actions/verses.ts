@@ -4,8 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-helpers";
 import { redirect } from "next/navigation";
 import { BOOKS, DEFAULT_IMAGE } from "@/lib/books";
+import { randomUUID } from "crypto";
 
-export async function addVerse(data: {
+type VerseInput = {
   reference: string;
   book: string;
   chapter: number;
@@ -13,7 +14,9 @@ export async function addVerse(data: {
   text: string;
   translation: string;
   imageUrl?: string;
-}) {
+};
+
+export async function addVerse(data: VerseInput) {
   const user = await getCurrentUser();
 
   await prisma.verse.create({
@@ -24,6 +27,32 @@ export async function addVerse(data: {
       isSeed: false,
     },
   });
+
+  redirect("/");
+}
+
+export async function addVerses(verses: VerseInput[]) {
+  if (verses.length === 0) return;
+
+  const user = await getCurrentUser();
+
+  if (verses.length === 1) {
+    return addVerse(verses[0]);
+  }
+
+  // Insert all verses in one shot, then redirect once
+  await prisma.$transaction(
+    verses.map((v) =>
+      prisma.verse.create({
+        data: {
+          ...v,
+          imageUrl: v.imageUrl ?? BOOKS[v.book] ?? DEFAULT_IMAGE,
+          userId: user?.id ?? null,
+          isSeed: false,
+        },
+      })
+    )
+  );
 
   redirect("/");
 }
@@ -45,7 +74,6 @@ export async function editVerse(data: {
   if (!verse) redirect("/");
   if (verse.userId !== (user?.id ?? null)) redirect("/");
 
-  // update imageUrl if book changed
   const imageUrl = fields.book ? (BOOKS[fields.book] ?? DEFAULT_IMAGE) : undefined;
 
   await prisma.verse.update({
