@@ -11,7 +11,7 @@ export default async function Navbar() {
   return (
     <nav className="bg-black text-white p-4 flex justify-between items-center sticky top-0 z-10">
       <div className="text-xl font-bold">
-        <Link href="/">MySite</Link>
+        <Link href="/">Anamnesis</Link>
       </div>
       
       {session?.user ? (
