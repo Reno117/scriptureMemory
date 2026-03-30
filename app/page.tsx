@@ -62,7 +62,26 @@ export default async function Home({
     skip: (page - 1) * pageSize,
     take: pageSize,
   });
-
+  if (!user) {
+  return (
+  <main className="min-h-screen flex items-center justify-center bg-stone-50">
+    <div className="text-center max-w-md px-4">
+      <h1 className="text-3xl font-serif font-bold text-stone-800 mb-4">
+        Welcome to Scripture Memory
+      </h1>
+      <p className="text-stone-500 mb-6">
+        Please log in to start memorizing and tracking verses.
+      </p>
+      <Link
+        href="/login"
+        className="px-5 py-2 bg-stone-800 text-white rounded-lg hover:bg-stone-700 transition-colors"
+      >
+        Log In
+      </Link>
+    </div>
+  </main>
+  );
+}
   return (
     <main className="min-h-screen bg-stone-50">
       <div className="max-w-3xl mx-auto px-4 py-12">
